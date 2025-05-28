@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  name       String
+  password    String
+  currency   String      @default("PLN")
+  transactions Transaction[]
+  goals       Goal[]
+  vaults      Vault[]
+  summaries   MonthlySummary[]
+  createdAt   DateTime   @default(now())
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  amount      Decimal
+  type        TransactionType
+  category    String
+  currency    String
+  description String?
+  createdAt   DateTime  @default(now())
+}
+
+model Goal {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  name          String
+  targetAmount  Decimal
+  currentAmount Decimal   @default(0.0)
+  currency      String
+  deadline      DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model Vault {
+  id       String   @id @default(uuid())
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+  currency String
+  balance  Decimal  @default(0.0)
+
+  @@unique([userId, currency])
+}
+
+model MonthlySummary {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  month      Int
+  year       Int
+  incomeSum  Decimal  @default(0.0)
+  expenseSum Decimal  @default(0.0)
+  currency   String
+
+  @@unique([userId, month, year, currency])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
