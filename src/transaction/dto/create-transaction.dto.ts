@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsString,
   IsOptional,
+  IsDate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -32,4 +33,8 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsDate()
+  @Type(() => Date)
+  data: Date;
 }

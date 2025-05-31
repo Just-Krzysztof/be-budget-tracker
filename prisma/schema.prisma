@@ -36,6 +36,7 @@ model Transaction {
   category    String
   currency    String
   description String?
+  data        DateTime?
   createdAt   DateTime  @default(now())
 }
 
