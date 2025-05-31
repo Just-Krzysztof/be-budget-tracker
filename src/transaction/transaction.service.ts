@@ -25,7 +25,6 @@ export class TransactionService {
       throw new NotFoundException(`User with ID ${data.userId} not found.`);
     }
 
-    // Ensure amount has max 2 decimal places
     const amount = Number(data.amount.toFixed(2));
 
     const transaction = await this.prisma.transaction.create({
