@@ -56,6 +56,45 @@ export class TransactionService {
       },
     });
 
+    const year = new Date(data.date).getFullYear();
+    const month = new Date(data.date).getMonth() + 1;
+
+    const updateData = {
+      incomeSum:
+        data.type === TransactionType.INCOME
+          ? { increment: data.amount }
+          : undefined,
+      expenseSum:
+        data.type === TransactionType.EXPENSE
+          ? { increment: data.amount }
+          : undefined,
+      saveSum:
+        data.type === TransactionType.SAVING
+          ? { increment: data.amount }
+          : undefined,
+    };
+
+    await this.prisma.monthlySummary.upsert({
+      where: {
+        userId_month_year_currency: {
+          userId: data.userId,
+          month,
+          year,
+          currency: data.currency,
+        },
+      },
+      create: {
+        userId: data.userId,
+        month,
+        year,
+        currency: data.currency,
+        incomeSum: data.type === TransactionType.INCOME ? data.amount : 0,
+        expenseSum: data.type === TransactionType.EXPENSE ? data.amount : 0,
+        saveSum: data.type === TransactionType.SAVING ? data.amount : 0,
+      },
+      update: updateData,
+    });
+
     return transaction;
   }
   async getTransactions(data: GetTransactionsDto) {
