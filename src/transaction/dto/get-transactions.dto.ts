@@ -35,4 +35,17 @@ export class GetTransactionsDto {
   @IsDate()
   @Type(() => Date)
   endDate?: Date;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  skip?: number = 0;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  @Type(() => Number)
+  take?: number = 10;
 }
