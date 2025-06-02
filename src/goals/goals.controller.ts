@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { GoalsService } from './goals.service';
 import { CreateGoalsDto } from './dto/create-goals.dto';
-
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+@UseGuards(JwtAuthGuard)
 @Controller('goals')
 export class GoalsController {
   constructor(private readonly goalService: GoalsService) {}
