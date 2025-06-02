@@ -55,4 +55,29 @@ export class GoalsService {
       },
     });
   }
+
+  async getUserGoals(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+    return await this.prisma.goal.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        targetAmount: true,
+        currentAmount: true,
+        currency: true,
+        deadline: true,
+      },
+    });
+  }
 }

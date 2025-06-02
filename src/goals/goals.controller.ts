@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Post, Put, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Put,
+  Param,
+  Get,
+} from '@nestjs/common';
 import { GoalsService } from './goals.service';
 import { CreateGoalsDto } from './dto/create-goals.dto';
 
@@ -20,4 +28,13 @@ export class GoalsController {
   ) {
     return this.goalService.updateGoalCurrentAmount(id, data.amount);
   }
+
+  @Get('list/:userId')
+  async findAll(@Param('userId') userId: string) {
+    return this.goalService.getUserGoals(userId);
+  }
+  // @Get('list')
+  // async findAll(@Query('userId') userId: string) {
+  //   return this.goalService.getUserGoals(userId);
+  // }
 }

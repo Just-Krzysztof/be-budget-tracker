@@ -1,4 +1,11 @@
-import { IsUUID, IsNumber, IsString, IsDate } from 'class-validator';
+import {
+  IsUUID,
+  IsNumber,
+  IsString,
+  IsDate,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateGoalsDto {
@@ -18,4 +25,9 @@ export class CreateGoalsDto {
   @IsDate()
   @Type(() => Date)
   deadline: Date;
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  tagIds?: string[];
 }

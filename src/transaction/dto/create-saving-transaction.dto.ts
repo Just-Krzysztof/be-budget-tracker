@@ -1,7 +1,6 @@
 import {
   IsUUID,
   IsNumber,
-  IsEnum,
   IsString,
   IsOptional,
   IsDate,
@@ -9,24 +8,13 @@ import {
 import { Type } from 'class-transformer';
 import { TransactionType } from 'generated/prisma';
 
-export class CreateTransactionDto {
+export class CreateSavingTransactionDto {
   @IsUUID()
   userId: string;
 
   @IsNumber()
   @Type(() => Number)
   amount: number;
-
-  @IsEnum(TransactionType)
-  type: TransactionType;
-
-  @IsUUID()
-  @IsOptional()
-  tagId?: string;
-
-  @IsUUID()
-  @IsOptional()
-  goalId?: string;
 
   @IsString()
   currency: string;
@@ -37,5 +25,10 @@ export class CreateTransactionDto {
 
   @IsDate()
   @Type(() => Date)
-  date: Date;
+  data: Date;
+
+  @IsUUID()
+  goalId: string;
+
+  type: TransactionType = TransactionType.SAVING;
 }

@@ -6,11 +6,13 @@ import { UserModule } from './user/user.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { GoalsService } from './goals/goals.service';
 import { GoalsController } from './goals/goals.controller';
+import { TagService } from './tag/tag.service';
+import { TagController } from './tag/tag.controller';
 
 @Module({
   imports: [UserModule, TransactionModule],
-  controllers: [AppController, GoalsController],
-  providers: [AppService, PrismaService, GoalsService],
+  controllers: [AppController, GoalsController, TagController],
+  providers: [AppService, PrismaService, GoalsService, TagService],
   exports: [PrismaService],
 })
 export class AppModule {}

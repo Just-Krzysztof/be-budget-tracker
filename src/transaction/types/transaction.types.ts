@@ -1,5 +1,21 @@
 import { TransactionType } from 'generated/prisma';
 
+interface ITag {
+  id: string;
+  name: string;
+  colorBg: string;
+  colorText: string;
+}
+
+export interface IGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  currency: string;
+  deadline?: Date;
+}
+
 /**
  * Podstawowy interfejs transakcji
  */
@@ -7,10 +23,11 @@ export interface ITransaction {
   id: string;
   amount: number;
   type: TransactionType;
-  category: string;
+  tag?: ITag | null;
+  goal?: IGoal | null;
   currency: string;
   description: string | null;
-  data: Date | null;
+  date: Date | null;
 }
 
 /**
