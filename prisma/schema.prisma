@@ -19,6 +19,7 @@ model User {
   transactions Transaction[]
   vaults       Vault[]
   summaries    MonthlySummary[]
+  Tag          Tag[]
 }
 
 model Transaction {
@@ -52,12 +53,14 @@ model Goal {
 }
 
 model Tag {
-  id            String        @id @default(uuid())
-  name          String        @unique
-  colorBg       String
-  colorText     String
-  transactions  Transaction[]
-  goals         Goal[]        @relation("GoalToTag")
+  id           String        @id @default(uuid())
+  userId       String
+  name         String        @unique
+  colorBg      String
+  colorText    String
+  transactions Transaction[]
+  user         User          @relation(fields: [userId], references: [id])
+  goals        Goal[]        @relation("GoalToTag")
 }
 
 model Vault {
