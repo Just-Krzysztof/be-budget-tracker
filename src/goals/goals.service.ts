@@ -26,6 +26,7 @@ export class GoalsService {
         id: true,
         name: true,
         targetAmount: true,
+        currentAmount: true,
         currency: true,
         deadline: true,
       },
