@@ -43,7 +43,15 @@ export class AuthService {
   async login(data: LoginUserDto) {
     const user = await this.validateUser(data.email, data.password);
     const payload = { sub: user.id, email: user.email };
-    return { accessToken: this.jwtService.sign(payload) };
+    const UserId = await this.prisma.user.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+    return { accessToken: this.jwtService.sign(payload), userId: UserId?.id };
   }
 
   async isEmailExist(data: EmailChecker) {
