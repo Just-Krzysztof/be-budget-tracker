@@ -34,6 +34,7 @@ export class TagService {
     return this.prisma.tag.create({
       data,
       select: {
+        id: true,
         name: true,
         userId: true,
         colorBg: true,
@@ -43,10 +44,6 @@ export class TagService {
   }
 
   async getTagList() {
-    const tags = await this.prisma.tag.findMany();
-
-    return {
-      tags,
-    };
+    return await this.prisma.tag.findMany();
   }
 }
