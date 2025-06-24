@@ -7,9 +7,28 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Goal, Tag, TransactionType, Prisma } from 'generated/prisma';
 import { GetTransactionsDto } from './dto/get-transactions.dto';
+import { GetShortSummaryDto } from './dto/get-short-summary.dto';
 @Injectable()
 export class TransactionService {
   constructor(private prisma: PrismaService) {}
+
+  private readonly monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  private getLastMonthIndex(monthIndex: number): number {
+    return (monthIndex + 11) % 12;
+  }
 
   async createTransaction(data: CreateTransactionDto) {
     let goal: Goal | null = null;
@@ -128,5 +147,69 @@ export class TransactionService {
     const hasMore = total > (data.skip ?? 0) + (data.take ?? 10);
 
     return { transactions, total, hasMore };
+  }
+
+  async getShortSummary(data: GetShortSummaryDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: data.userId,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const now = new Date();
+    const currentMonthIndex = now.getMonth();
+    const currentYear = now.getFullYear();
+    const lastMonthIndex = this.getLastMonthIndex(currentMonthIndex);
+    const lastYear = currentMonthIndex === 0 ? currentYear - 1 : currentYear;
+
+    const startLastMonth = new Date(lastYear, lastMonthIndex, 2);
+    const endLastMonth = new Date(lastYear, lastMonthIndex + 1, 1);
+    const startCurrentMonth = new Date(currentYear, currentMonthIndex, 2);
+    const endCurrentMonth = new Date(currentYear, currentMonthIndex + 1, 1);
+
+    const lastMonth = await this.prisma.transaction.findMany({
+      where: {
+        userId: data.userId,
+        date: {
+          gte: startLastMonth,
+          lte: endLastMonth,
+        },
+      },
+      select: {
+        id: true,
+        type: true,
+        amount: true,
+        currency: true,
+      },
+    });
+    console.log('startCurrentMonth', startCurrentMonth);
+    console.log('endCurrentMonth', endCurrentMonth);
+    console.log('----');
+
+    console.log('startLastMonth', startLastMonth);
+    console.log('endLastMonth', endLastMonth);
+
+    const currentMonth = await this.prisma.transaction.findMany({
+      where: {
+        userId: data.userId,
+        date: {
+          gte: startCurrentMonth,
+          lte: endCurrentMonth,
+        },
+      },
+      select: {
+        id: true,
+        type: true,
+        amount: true,
+        currency: true,
+      },
+    });
+    return [
+      { title: 'CURRENT_MONTH', data: currentMonth },
+      { title: 'LAST_MONTH', data: lastMonth },
+    ];
   }
 }
