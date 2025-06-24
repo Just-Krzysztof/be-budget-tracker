@@ -185,12 +185,6 @@ export class TransactionService {
         currency: true,
       },
     });
-    console.log('startCurrentMonth', startCurrentMonth);
-    console.log('endCurrentMonth', endCurrentMonth);
-    console.log('----');
-
-    console.log('startLastMonth', startLastMonth);
-    console.log('endLastMonth', endLastMonth);
 
     const currentMonth = await this.prisma.transaction.findMany({
       where: {
