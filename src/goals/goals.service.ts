@@ -71,6 +71,9 @@ export class GoalsService {
       where: {
         userId: userId,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
       select: {
         id: true,
         name: true,

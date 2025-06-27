@@ -180,6 +180,9 @@ export class TransactionService {
           lte: endLastMonth,
         },
       },
+      orderBy: {
+        date: 'asc',
+      },
       select: {
         id: true,
         type: true,
@@ -195,6 +198,9 @@ export class TransactionService {
           gte: startCurrentMonth,
           lte: endCurrentMonth,
         },
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
       select: {
         id: true,
