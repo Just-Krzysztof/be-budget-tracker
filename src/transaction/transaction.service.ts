@@ -45,17 +45,18 @@ export class TransactionService {
     }
     if (data.goalId) {
       goal = await this.prisma.goal.findUnique({
-        where: {
-          id: data.goalId,
-        },
+        where: { id: data.goalId },
       });
-      if (!goal) {
-        throw new NotFoundException('Goal not found');
-      }
-      if (data.type !== TransactionType.SAVING) {
-        throw new BadRequestException(
-          'Goal can only be used for saving transactions',
-        );
+      if (goal) {
+        if (data.type !== TransactionType.SAVING) {
+          throw new BadRequestException(
+            'Goal can only be used for saving transactions',
+          );
+        }
+        await this.prisma.goal.update({
+          where: { id: goal.id },
+          data: { currentAmount: { increment: data.amount } },
+        });
       }
     }
     if (data.tagId) {
@@ -68,6 +69,7 @@ export class TransactionService {
         throw new NotFoundException('Tag not found');
       }
     }
+    console.log('goal', goal);
 
     const transaction = await this.prisma.transaction.create({
       data: {
