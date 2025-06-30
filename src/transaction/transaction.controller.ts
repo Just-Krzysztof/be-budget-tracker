@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { GetTransactionsDto } from './dto/get-transactions.dto';
@@ -23,5 +23,14 @@ export class TransactionController {
   @Post('summary/short')
   getShortSummary(@Body() data: GetShortSummaryDto) {
     return this.transactionService.getShortSummary(data);
+  }
+
+  @Get('summary/:userId/:month/:year')
+  getMonthSummary(
+    @Param('userId') userId: string,
+    @Param('month') month: number,
+    @Param('year') year: number,
+  ) {
+    return this.transactionService.getMonthSummary(userId, month, year);
   }
 }

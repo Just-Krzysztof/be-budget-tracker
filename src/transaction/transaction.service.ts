@@ -215,4 +215,32 @@ export class TransactionService {
       { title: 'LAST_MONTH', data: lastMonth },
     ];
   }
+
+  async getMonthSummary(userId: string, month: number, year: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found.`);
+    }
+
+    return await this.prisma.monthlySummary.findMany({
+      where: {
+        userId: user.id,
+        month: month,
+        year: year,
+      },
+      select: {
+        saveSum: true,
+        incomeSum: true,
+        expenseSum: true,
+        currency: true,
+        month: true,
+        year: true,
+      },
+    });
+  }
 }
