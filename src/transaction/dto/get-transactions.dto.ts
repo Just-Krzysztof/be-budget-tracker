@@ -47,5 +47,5 @@ export class GetTransactionsDto {
   @Min(1)
   @Max(100)
   @Type(() => Number)
-  take?: number = 10;
+  take?: number = 25;
 }

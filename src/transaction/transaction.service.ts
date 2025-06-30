@@ -145,10 +145,11 @@ export class TransactionService {
       take: data.take,
     });
 
-    const total = await this.prisma.transaction.count({ where });
-    const hasMore = total > (data.skip ?? 0) + (data.take ?? 10);
+    const totalElements = await this.prisma.transaction.count({ where });
+    const totalPages = Math.ceil(totalElements / (data.take ?? 25));
+    const hasMore = totalElements > (data.skip ?? 0) + (data.take ?? 10);
 
-    return { transactions, total, hasMore };
+    return { transactions, totalElements, totalPages, hasMore };
   }
 
   async getShortSummary(data: GetShortSummaryDto) {
